@@ -761,6 +761,64 @@ button { font: inherit; }
 .footer-inner .brand { font-weight: 600; color: var(--text); }
 
 /* ============================================================
+   Ads — sponsored glass card + admin dashboard
+   ============================================================ */
+.ad-card { /* reuses .glass + .post-card; just the badge bits below */ }
+.ad-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--line);
+}
+@media (prefers-color-scheme: light) {
+  .ad-badge { background: rgba(255, 255, 255, 0.7); }
+}
+.ad-sponsor { font-size: 0.82rem; color: var(--muted); }
+.ad-headline { font-weight: 600; }
+a.ad-headline:hover { color: var(--accent-text); }
+.ad-cta { margin-left: 8px; color: var(--accent-text); font-weight: 600; font-size: 0.9rem; }
+/* The ad card gets a faint accent edge so it reads as sponsored, not a post */
+.ad-card { border-color: rgba(207, 174, 255, 0.35); }
+
+/* ---------- Admin dashboard ---------- */
+.admin-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.admin-list-title { font-size: 1.15rem; font-weight: 600; margin: 0 0 14px; }
+.ad-admin-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.ad-admin-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-input);
+}
+.ad-admin-row.is-paused { opacity: 0.6; }
+.ad-admin-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.ad-admin-info { flex: 1; min-width: 0; }
+.ad-admin-headline { font-weight: 600; margin-bottom: 2px; }
+.ad-admin-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.danger-btn { color: var(--danger-text); }
+
+/* ============================================================
    Motion — entrance stagger (load), hover, press
    ============================================================ */
 @media (prefers-reduced-motion: no-preference) {

@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+
+<div class="admin-wrap">
+  <div class="glass auth-card wide">
+    <div class="auth-brand">
+      <h1>Ad manager</h1>
+      <p class="muted">Create and manage the sponsored cards shown in the feed and on posts.</p>
+    </div>
+
+    <form method="POST" action="/admin/ads?_csrf=<%= csrf %>" enctype="multipart/form-data" class="form" id="ad-form">
+      <input type="hidden" name="_csrf" value="<%= csrf %>" />
+
+      <div class="dropzone" id="dropzone">
+        <input type="file" name="image" id="image-input" accept="image/*" required />
+        <div class="dropzone-inner" id="dropzone-inner">
+          <div class="dropzone-icon" aria-hidden="true">🖼️</div>
+          <p><strong>Click to choose</strong> or drag an image here</p>
+          <p class="muted small">JPG, PNG, GIF or WEBP · up to 5MB</p>
+        </div>
+        <img id="preview" class="preview hidden" alt="Preview" />
+      </div>
+
+      <label class="field">
+        <span>Headline</span>
+        <input type="text" name="headline" required maxlength="140" placeholder="Get 20% off your first order" />
+      </label>
+
+      <label class="field">
+        <span>Sponsor name <span class="muted">(optional)</span></span>
+        <input type="text" name="sponsor" maxlength="80" placeholder="Acme Co" />
+      </label>
+
+      <label class="field">
+        <span>Link <span class="muted">(optional)</span></span>
+        <input type="url" name="link_url" maxlength="500" placeholder="https://example.com" />
+        <small class="hint">Where the “Learn more” click sends people. Must be http(s).</small>
+      </label>
+
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">Create ad</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="glass auth-card wide">
+    <h2 class="admin-list-title">Your ads (<%= ads.length %>)</h2>
+
+    <% if (ads.length === 0) { %>
+      <p class="muted">No ads yet. Create one above to see it in the feed.</p>
+    <% } else { %>
+      <ul class="ad-admin-list">
+        <% ads.forEach(function(ad) { %>
+          <li class="ad-admin-row <%= ad.active ? '' : 'is-paused' %>">
+            <img class="ad-admin-thumb" src="<%= ad.image_url %>" alt="<%= ad.headline %>" loading="lazy" />
+            <div class="ad-admin-info">
+              <div class="ad-admin-headline"><%= ad.headline %></div>
+              <% if (ad.sponsor) { %><div class="muted small"><%= ad.sponsor %></div><% } %>
+              <div class="muted small">
+                <%= ad.active ? 'Active' : 'Paused' %> ·
+                <%= ad.impressions %> impressions · <%= ad.clicks %> clicks
+              </div>
+            </div>
+            <div class="ad-admin-actions">
+              <form method="POST" action="/admin/ads/<%= ad.id %>/toggle" class="inline-form">
+                <input type="hidden" name="_csrf" value="<%= csrf %>" />
+                <button type="submit" class="btn btn-ghost btn-sm"><%= ad.active ? 'Pause' : 'Activate' %></button>
+              </form>
+              <form method="POST" action="/admin/ads/<%= ad.id %>/delete" class="inline-form"
+                    onsubmit="return confirm('Delete this ad? This cannot be undone.');">
+                <input type="hidden" name="_csrf" value="<%= csrf %>" />
+                <button type="submit" class="btn btn-ghost btn-sm danger-btn">Delete</button>
+              </form>
+            </div>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -56,10 +56,23 @@ db.exec(`
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
   );
 
+  CREATE TABLE IF NOT EXISTS ads (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    headline    TEXT NOT NULL,
+    sponsor     TEXT NOT NULL DEFAULT '',
+    image_url   TEXT NOT NULL,
+    link_url    TEXT NOT NULL DEFAULT '',
+    active      INTEGER NOT NULL DEFAULT 1,
+    impressions INTEGER NOT NULL DEFAULT 0,
+    clicks      INTEGER NOT NULL DEFAULT 0,
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
   CREATE INDEX IF NOT EXISTS idx_posts_user    ON posts(user_id);
   CREATE INDEX IF NOT EXISTS idx_posts_created ON posts(created_at DESC);
   CREATE INDEX IF NOT EXISTS idx_likes_post    ON likes(post_id);
   CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
+  CREATE INDEX IF NOT EXISTS idx_ads_active    ON ads(active);
 `);
 
 module.exports = db;

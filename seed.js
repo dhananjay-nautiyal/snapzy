@@ -87,5 +87,26 @@ if (postCount === 0) {
   console.log('Posts already exist — skipping.');
 }
 
+// --- Demo ads (skip if any exist) ---
+const adCount = db.prepare('SELECT COUNT(*) AS c FROM ads').get().c;
+if (adCount === 0) {
+  // [file, c1, c2, svgLabel, headline, sponsor, link]
+  const creatives = [
+    ['ad1.svg', '#6366f1', '#22d3ee', 'Snapzy Pro', 'Unlock 4K uploads & an ad-free feed', 'Snapzy', 'https://example.com/pro'],
+    ['ad2.svg', '#ec4899', '#f59e0b', 'PhotoWeek', 'Free preset pack — this week only', 'PhotoWeek', 'https://example.com/presets'],
+  ];
+  const insertAd = db.prepare(
+    'INSERT INTO ads (headline, sponsor, image_url, link_url) VALUES (?, ?, ?, ?)'
+  );
+  for (const [file, c1, c2, label, headline, sponsor, link] of creatives) {
+    const url = makePhoto(file, c1, c2, label);
+    insertAd.run(headline, sponsor, url, link);
+  }
+  console.log(`Created ${creatives.length} demo ads.`);
+} else {
+  console.log('Ads already exist — skipping.');
+}
+
 console.log('Done.');
-console.log('\nDemo login → email: ava@snapzy.app  |  password: password123\n');
+console.log('\nDemo login → email: ava@snapzy.app  |  password: password123');
+console.log('Admin UI   → /admin (set ADMIN_USERS=ava to enable)\n');
