@@ -2,7 +2,7 @@
 
 <% if (posts.length === 0) { %>
   <div class="empty-state">
-    <div class="empty-icon">📸</div>
+    <div class="empty-icon" aria-hidden="true">📸</div>
     <h2>No photos yet</h2>
     <p class="muted">
       <% if (currentUser) { %>
@@ -22,19 +22,21 @@
   </div>
 <% } else { %>
   <div class="feed">
-    <% posts.forEach(function(post) { %>
-      <article class="card post-card">
+    <% posts.forEach(function(post, i) { %>
+      <article class="glass post-card" style="--i: <%= Math.min(i, 8) %>">
         <div class="post-head">
           <a href="/u/<%= post.username %>" class="post-author">
-            <span class="avatar avatar-sm"><%= post.username.charAt(0).toUpperCase() %></span>
+            <span class="avatar avatar-sm" aria-hidden="true"><%= post.username.charAt(0).toUpperCase() %></span>
             <span class="username"><%= post.username %></span>
           </a>
-          <span class="muted time"><%= post.created_at %></span>
+          <time class="time" datetime="<%= post.created_at.replace(' ', 'T') %>Z"><%= post.created_at %></time>
         </div>
 
-        <a href="/posts/<%= post.id %>" class="post-image-link">
-          <img src="<%= post.image_url %>" alt="<%= post.caption || 'Photo' %>" class="post-image" loading="lazy" />
-        </a>
+        <div class="post-media">
+          <a href="/posts/<%= post.id %>">
+            <img src="<%= post.image_url %>" alt="<%= post.caption || 'Photo' %>" loading="lazy" />
+          </a>
+        </div>
 
         <div class="post-actions">
           <button
@@ -43,11 +45,13 @@
             aria-pressed="<%= post.liked_by_me ? 'true' : 'false' %>"
             <%= currentUser ? '' : 'disabled' %>
           >
-            <span class="heart"><%= post.liked_by_me ? '♥' : '♡' %></span>
+            <span class="heart" aria-hidden="true"><%= post.liked_by_me ? '♥' : '♡' %></span>
             <span class="like-count"><%= post.like_count %></span>
+            <span class="sr-only">likes</span>
           </button>
           <a href="/posts/<%= post.id %>" class="action-btn">
             💬 <span><%= post.comment_count %></span>
+            <span class="sr-only">comments</span>
           </a>
         </div>
 

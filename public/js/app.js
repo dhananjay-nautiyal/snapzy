@@ -80,4 +80,42 @@
       setTimeout(function () { el.remove(); }, 400);
     });
   }, 3500);
+
+  // --- Relative timestamps (raw server time stays as no-JS fallback) ---
+  function relativeTime(iso) {
+    var then = new Date(iso).getTime();
+    if (isNaN(then)) return null;
+    var secs = Math.round((Date.now() - then) / 1000);
+    if (secs < 45) return 'just now';
+    if (secs < 90) return '1m';
+    var mins = Math.round(secs / 60);
+    if (mins < 60) return mins + 'm';
+    var hours = Math.round(mins / 60);
+    if (hours < 24) return hours + 'h';
+    var days = Math.round(hours / 24);
+    if (days < 7) return days + 'd';
+    return new Date(then).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  }
+
+  document.querySelectorAll('time[datetime]').forEach(function (el) {
+    var iso = el.getAttribute('datetime');
+    var full = new Date(iso);
+    if (isNaN(full)) return;
+    el.setAttribute('title', full.toLocaleString());
+    var rel = relativeTime(iso);
+    if (rel) el.textContent = rel;
+  });
+
+  // --- Only blur post cards that are actually in view (backdrop-filter budget) ---
+  var cards = document.querySelectorAll('.post-card');
+  if (cards.length && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        entry.target.classList.toggle('is-inview', entry.isIntersecting);
+      });
+    }, { rootMargin: '120px 0px' });
+    cards.forEach(function (c) { io.observe(c); });
+  } else {
+    cards.forEach(function (c) { c.classList.add('is-inview'); });
+  }
 })();
