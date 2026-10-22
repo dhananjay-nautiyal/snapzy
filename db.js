@@ -1,8 +1,17 @@
 require('dotenv').config();
 const path = require('path');
+const fs = require('fs');
 const { DatabaseSync } = require('node:sqlite');
 
-const db = new DatabaseSync(path.join(__dirname, 'snapzy.db'));
+// Allow overriding the DB location (e.g. a mounted volume in Docker/cloud).
+const dbPath = process.env.DATABASE_PATH
+  ? path.resolve(process.env.DATABASE_PATH)
+  : path.join(__dirname, 'snapzy.db');
+
+// Ensure the containing directory exists (for mounted volume paths).
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+
+const db = new DatabaseSync(dbPath);
 
 // node:sqlite has no .pragma() helper — issue PRAGMAs via exec.
 db.exec('PRAGMA journal_mode = WAL');

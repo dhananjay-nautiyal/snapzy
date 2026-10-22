@@ -1,0 +1,18 @@
+# Render blueprint — auto-detected when you create a service from this repo.
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: snapzy
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    # Re-run the idempotent seed on boot so a fresh/ephemeral disk always
+    # has demo content (safe: it won't duplicate existing data).
+    startCommand: npm run seed && node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Render generates a random secret and keeps it stable across redeploys.
+      - key: SESSION_SECRET
+        generateValue: true
+    healthCheckPath: /login

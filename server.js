@@ -10,11 +10,28 @@ const db = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const SESSION_SECRET = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
+const IS_PROD = process.env.NODE_ENV === 'production';
+
+// Use a stable secret in production — a random per-boot secret would log
+// everyone out whenever the service restarts.
+const SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) {
+  if (IS_PROD) {
+    console.warn(
+      '[Snapzy] WARNING: SESSION_SECRET is not set in production. ' +
+        'Sessions will reset on every restart. Set a SESSION_SECRET env var.'
+    );
+  }
+}
+const sessionSecret = SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 
 // --- View engine ---
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Behind a reverse proxy (Render/Railway/etc.) trust the first hop so
+// Express sees the real client IP and protocol.
+if (IS_PROD) app.set('trust proxy', 1);
 
 // --- Body parsing ---
 app.use(express.urlencoded({ extended: true }));
@@ -27,7 +44,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // --- Sessions ---
 app.use(
   session({
-    secret: SESSION_SECRET,
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
