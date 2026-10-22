@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const express = require('express');
 const multer = require('multer');
 const db = require('../db');
+const { getSponsoredAd } = require('../ads');
 
 const router = express.Router();
 
@@ -80,7 +81,10 @@ router.get('/:id', (req, res) => {
     )
     .all(id);
 
-  res.render('post', { title: 'Post', post, comments });
+  // Sponsored card below the comments (null when no active ads).
+  const ad = getSponsoredAd();
+
+  res.render('post', { title: 'Post', post, comments, ad });
 });
 
 // --- Like / unlike (toggle) ---

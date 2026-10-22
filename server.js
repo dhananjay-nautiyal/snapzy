@@ -7,6 +7,7 @@ const crypto = require('crypto');
 require('dotenv').config();
 
 const db = require('./db');
+const { getSponsoredAd } = require('./ads');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -98,6 +99,7 @@ app.use((req, res, next) => {
 
 // --- Routes ---
 app.use('/', require('./routes/auth'));
+app.use('/', require('./routes/admin'));
 app.use('/posts', require('./routes/posts'));
 app.use('/u', require('./routes/users'));
 
@@ -117,7 +119,11 @@ app.get('/', (req, res) => {
        LIMIT 60`
     )
     .all({ me: req.session.userId || -1 });
-  res.render('feed', { title: 'Feed', posts });
+
+  // Sponsored card for the feed (null when no active ads — renders nothing).
+  const ad = getSponsoredAd();
+
+  res.render('feed', { title: 'Feed', posts, ad });
 });
 
 // --- 404 ---

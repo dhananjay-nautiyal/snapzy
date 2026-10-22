@@ -62,7 +62,17 @@
           </div>
         <% } %>
       </article>
+
+      <% /* Sponsored card slides in after the 3rd post (if an ad exists) */ %>
+      <% if (ad && i === 2) { %>
+        <%- include('partials/ad', { ad: ad, adIndex: 3 }) %>
+      <% } %>
     <% }) %>
+
+    <% /* If there are fewer than 3 posts, show the ad after the last one */ %>
+    <% if (ad && posts.length > 0 && posts.length < 3) { %>
+      <%- include('partials/ad', { ad: ad, adIndex: posts.length }) %>
+    <% } %>
   </div>
 <% } %>
 
