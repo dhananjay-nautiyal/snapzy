@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<div class="search-wrap">
+  <div class="glass search-card">
+    <h1 class="search-title">Search</h1>
+
+    <!-- Works without JS (plain GET); JS upgrades this to live results. -->
+    <form method="GET" action="/search" class="search-form" role="search">
+      <label class="sr-only" for="search-input">Search people by username or bio</label>
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.2-3.2"></path>
+        </svg>
+        <input
+          type="search"
+          id="search-input"
+          name="q"
+          value="<%= q %>"
+          placeholder="Search people by username or bio…"
+          autocomplete="off"
+          maxlength="50"
+        />
+      </div>
+    </form>
+
+    <div id="search-results" class="search-results" aria-live="polite">
+      <% if (!q) { %>
+        <p class="muted search-hint">Start typing to find people on Snapzy.</p>
+      <% } else if (results.length === 0) { %>
+        <p class="muted search-hint">No people found for “<%= q %>”.</p>
+      <% } else { %>
+        <%- include('partials/search-results') %>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Hand the initial server-rendered query to app.js so live search can
+  // pick up from here without a flash of "start typing".
+  window.__SEARCH_Q__ = <%- JSON.stringify(q) %>;
+</script>
+
+<%- include('partials/footer') %>

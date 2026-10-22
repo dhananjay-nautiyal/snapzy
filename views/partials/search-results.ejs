@@ -1,0 +1,27 @@
+<% /* Shared search-result row markup.
+       Expects: results (array of {username, bio, post_count, following}) */ %>
+<ul class="user-list">
+  <% results.forEach(function(r) { %>
+    <li class="user-row glass">
+      <a href="/u/<%= r.username %>" class="user-row-main">
+        <span class="avatar" aria-hidden="true"><%= r.username.charAt(0).toUpperCase() %></span>
+        <span class="user-row-text">
+          <span class="user-row-name"><%= r.username %></span>
+          <% if (r.bio) { %>
+            <span class="user-row-bio"><%= r.bio %></span>
+          <% } else { %>
+            <span class="user-row-bio muted">No bio yet</span>
+          <% } %>
+        </span>
+      </a>
+      <% if (currentUser && currentUser.username !== r.username) { %>
+        <button
+          type="button"
+          class="btn btn-sm follow-btn <%= r.following ? 'following' : '' %>"
+          data-user="<%= r.username %>"
+          aria-pressed="<%= r.following ? 'true' : 'false' %>"
+        ><%= r.following ? 'Following' : 'Follow' %></button>
+      <% } %>
+    </li>
+  <% }) %>
+</ul>

@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+
+<div class="auth-wrap">
+  <div class="glass auth-card">
+    <div class="auth-brand">
+      <h1>Edit profile</h1>
+      <p class="muted">Update the bio shown on your profile and in search results.</p>
+    </div>
+
+    <form method="POST" action="/settings" class="form">
+      <input type="hidden" name="_csrf" value="<%= csrf %>" />
+
+      <label class="field">
+        <span>Username</span>
+        <input type="text" value="<%= user.username %>" disabled aria-describedby="username-help" />
+        <small class="hint" id="username-help">Usernames can’t be changed yet.</small>
+      </label>
+
+      <label class="field">
+        <span>Email</span>
+        <input type="email" value="<%= user.email %>" disabled />
+      </label>
+
+      <label class="field">
+        <span>Bio</span>
+        <textarea name="bio" rows="3" maxlength="200" placeholder="Tell people a little about you…"><%= user.bio %></textarea>
+        <small class="hint">Up to 200 characters.</small>
+      </label>
+
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <a href="/u/<%= user.username %>" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

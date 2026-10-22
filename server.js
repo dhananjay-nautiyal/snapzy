@@ -100,6 +100,8 @@ app.use((req, res, next) => {
 // --- Routes ---
 app.use('/', require('./routes/auth'));
 app.use('/', require('./routes/admin'));
+app.use('/', require('./routes/search'));
+app.use('/', require('./routes/settings'));
 app.use('/posts', require('./routes/posts'));
 app.use('/u', require('./routes/users'));
 

@@ -8,13 +8,22 @@
         <h1 class="profile-username"><%= user.username %></h1>
         <% if (isOwn) { %>
           <a href="/posts/new" class="btn btn-primary btn-sm">＋ New post</a>
+          <a href="/settings" class="btn btn-ghost btn-sm">Edit profile</a>
+        <% } else if (currentUser) { %>
+          <button
+            type="button"
+            class="btn btn-sm follow-btn <%= isFollowing ? 'following' : '' %>"
+            data-user="<%= user.username %>"
+            aria-pressed="<%= isFollowing ? 'true' : 'false' %>"
+          ><%= isFollowing ? 'Following' : 'Follow' %></button>
         <% } %>
       </div>
       <% if (user.bio) { %><p class="profile-bio"><%= user.bio %></p><% } %>
       <div class="profile-stats">
         <span><strong><%= stats.posts %></strong> posts</span>
-        <span><strong><%= stats.likes_received %></strong> likes received</span>
-        <span><strong><%= stats.comments_received %></strong> comments received</span>
+        <span><strong class="follower-count"><%= stats.followers %></strong> followers</span>
+        <span><strong><%= stats.following %></strong> following</span>
+        <span><strong><%= stats.likes_received %></strong> likes</span>
       </div>
       <div class="muted small">Joined <%= user.created_at %></div>
     </div>
