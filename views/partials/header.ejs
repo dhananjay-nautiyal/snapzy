@@ -46,7 +46,13 @@
       <nav class="nav" aria-label="Main">
         <% if (currentUser) { %>
           <a href="/" class="nav-link nav-feed">Feed</a>
-          <a href="/posts/new" class="btn btn-primary btn-sm">＋ Share</a>
+          <a href="/search" class="nav-icon-btn" aria-label="Search">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m20 20-3.2-3.2"></path>
+            </svg>
+          </a>
+          <a href="/posts/new" class="btn btn-primary btn-sm nav-share">＋ <span class="nav-share-label">Share</span></a>
           <a href="/u/<%= currentUser.username %>" class="nav-link nav-user">
             <span class="avatar avatar-sm" aria-hidden="true"><%= currentUser.username.charAt(0).toUpperCase() %></span>
             <span class="name"><%= currentUser.username %></span>
@@ -56,6 +62,12 @@
             <button type="submit" class="nav-link nav-btn">Log out</button>
           </form>
         <% } else { %>
+          <a href="/search" class="nav-icon-btn" aria-label="Search">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m20 20-3.2-3.2"></path>
+            </svg>
+          </a>
           <a href="/login" class="btn btn-ghost btn-sm">Log in</a>
           <a href="/signup" class="btn btn-primary btn-sm">Sign up</a>
         <% } %>

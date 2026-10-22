@@ -819,6 +819,145 @@ a.ad-headline:hover { color: var(--accent-text); }
 .danger-btn { color: var(--danger-text); }
 
 /* ============================================================
+   Social — navbar search, follow, search page, settings, share, toast
+   ============================================================ */
+/* --- Navbar icon button (search) — 44px target, icon-only --- */
+.nav-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-pill);
+  color: var(--text);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.nav-icon-btn:hover { background: rgba(255, 255, 255, 0.14); }
+@media (prefers-color-scheme: light) {
+  .nav-icon-btn:hover { background: rgba(255, 255, 255, 0.6); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .nav-icon-btn:hover { transform: translateY(-2px); }
+}
+.nav-icon-btn svg { display: block; }
+
+/* --- Follow button (follow / following states) --- */
+.follow-btn {
+  border: 1px solid transparent;
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: var(--glass-highlight), 0 4px 12px var(--accent-glow);
+  white-space: nowrap;
+}
+.follow-btn.following {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow: none;
+}
+@media (prefers-color-scheme: light) {
+  .follow-btn.following { background-color: rgba(255, 255, 255, 0.55); border-color: rgba(255, 255, 255, 0.8); }
+}
+.follow-btn:disabled { opacity: 0.7; cursor: default; }
+
+/* --- Search page --- */
+.search-wrap { max-width: 560px; margin: 0 auto; }
+.search-card { padding: 20px; }
+.search-title { font-size: 1.3rem; font-weight: 600; margin: 0 0 14px; }
+.search-form { margin-bottom: 8px; }
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+}
+@media (prefers-color-scheme: light) { .search-field { background: rgba(255, 255, 255, 0.7); } }
+.search-field:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+.search-field input {
+  flex: 1;
+  min-width: 0;
+  min-height: 46px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+}
+.search-field input::placeholder { color: var(--muted); }
+.search-results { margin-top: 12px; }
+.search-hint { padding: 14px 6px; margin: 0; }
+
+/* --- Search result rows --- */
+.user-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+}
+.user-row-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  color: var(--text);
+  text-decoration: none;
+}
+.user-row-text { display: flex; flex-direction: column; min-width: 0; }
+.user-row-name { font-weight: 600; }
+.user-row-bio {
+  font-size: 0.86rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.user-row-main:hover .user-row-name { color: var(--accent-text); }
+
+/* --- Settings card reuses .auth-wrap/.auth-card/.form/.field --- */
+
+/* --- Share button in post action row --- */
+.share-btn { gap: 6px; }
+.share-btn svg { display: block; flex-shrink: 0; }
+@media (max-width: 420px) {
+  .share-label, .nav-share-label { display: none; }   /* icon-only on the narrowest screens */
+  .nav-share { padding: 0 14px; }
+}
+
+/* --- Toast (share confirmation) --- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%) translateY(20px);
+  max-width: calc(100vw - 32px);
+  padding: 12px 20px;
+  border-radius: var(--r-pill);
+  background: rgba(20, 20, 34, 0.92);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 60;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .toast { transition: opacity 0.25s ease; transform: translateX(-50%) translateY(0); }
+}
+
+/* ============================================================
    Motion — entrance stagger (load), hover, press
    ============================================================ */
 @media (prefers-reduced-motion: no-preference) {
