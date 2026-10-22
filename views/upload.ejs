@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+
+<div class="auth-wrap">
+  <div class="auth-card wide">
+    <div class="auth-brand">
+      <h1>Share a photo</h1>
+      <p class="muted">Post something to your feed</p>
+    </div>
+
+    <form method="POST" action="/posts/new?_csrf=<%= csrf %>" enctype="multipart/form-data" class="form" id="upload-form">
+      <input type="hidden" name="_csrf" value="<%= csrf %>" />
+
+      <div class="dropzone" id="dropzone">
+        <input type="file" name="image" id="image-input" accept="image/*" required />
+        <div class="dropzone-inner" id="dropzone-inner">
+          <div class="dropzone-icon">🖼️</div>
+          <p><strong>Click to choose</strong> or drag an image here</p>
+          <p class="muted small">JPG, PNG, GIF or WEBP · up to 5MB</p>
+        </div>
+        <img id="preview" class="preview hidden" alt="Preview" />
+      </div>
+
+      <label class="field">
+        <span>Caption</span>
+        <textarea name="caption" rows="3" maxlength="500" placeholder="Say something about this photo…"></textarea>
+      </label>
+
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">Post</button>
+        <a href="/" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

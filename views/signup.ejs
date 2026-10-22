@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="logo-mark big">◉</span>
+      <h1>Create your account</h1>
+      <p class="muted">Join Snapzy and share your moments</p>
+    </div>
+
+    <form method="POST" action="/signup" class="form">
+      <input type="hidden" name="_csrf" value="<%= csrf %>" />
+
+      <label class="field">
+        <span>Username</span>
+        <input type="text" name="username" required autofocus minlength="3" maxlength="20"
+               pattern="[a-zA-Z0-9_]+" placeholder="yourname" />
+        <small class="hint">3–20 characters · letters, numbers, underscore</small>
+      </label>
+
+      <label class="field">
+        <span>Email</span>
+        <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" />
+      </label>
+
+      <label class="field">
+        <span>Password</span>
+        <input type="password" name="password" required minlength="6" autocomplete="new-password" placeholder="At least 6 characters" />
+      </label>
+
+      <label class="field">
+        <span>Bio <span class="muted">(optional)</span></span>
+        <textarea name="bio" rows="2" maxlength="160" placeholder="Tell people about you…"></textarea>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    </form>
+
+    <p class="auth-alt muted">
+      Already have an account? <a href="/login">Log in</a>
+    </p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,77 @@
+<%- include('partials/header') %>
+
+<div class="post-detail">
+  <article class="card post-card detail">
+    <div class="post-head">
+      <a href="/u/<%= post.username %>" class="post-author">
+        <span class="avatar avatar-sm"><%= post.username.charAt(0).toUpperCase() %></span>
+        <span class="username"><%= post.username %></span>
+      </a>
+      <span class="muted time"><%= post.created_at %></span>
+    </div>
+
+    <img src="<%= post.image_url %>" alt="<%= post.caption || 'Photo' %>" class="post-image" />
+
+    <div class="post-actions">
+      <button
+        class="like-btn <%= post.liked_by_me ? 'liked' : '' %>"
+        data-post="<%= post.id %>"
+        aria-pressed="<%= post.liked_by_me ? 'true' : 'false' %>"
+        <%= currentUser ? '' : 'disabled' %>
+      >
+        <span class="heart"><%= post.liked_by_me ? '♥' : '♡' %></span>
+        <span class="like-count"><%= post.like_count %></span>
+      </button>
+      <span class="action-btn">💬 <span><%= post.comment_count %></span></span>
+
+      <% if (currentUser && currentUser.id === post.user_id) { %>
+        <form method="POST" action="/posts/<%= post.id %>/delete" class="inline-form danger-form"
+              onsubmit="return confirm('Delete this post? This cannot be undone.');">
+          <input type="hidden" name="_csrf" value="<%= csrf %>" />
+          <button type="submit" class="action-btn danger">🗑 Delete</button>
+        </form>
+      <% } %>
+    </div>
+
+    <% if (post.caption) { %>
+      <div class="post-caption">
+        <a href="/u/<%= post.username %>" class="username"><%= post.username %></a>
+        <span><%= post.caption %></span>
+      </div>
+    <% } %>
+
+    <div class="comments">
+      <h3 class="comments-title">Comments</h3>
+
+      <% if (comments.length === 0) { %>
+        <p class="muted small">No comments yet. Be the first!</p>
+      <% } else { %>
+        <ul class="comment-list">
+          <% comments.forEach(function(c) { %>
+            <li class="comment">
+              <a href="/u/<%= c.username %>" class="avatar avatar-xs"><%= c.username.charAt(0).toUpperCase() %></a>
+              <div class="comment-body">
+                <a href="/u/<%= c.username %>" class="username"><%= c.username %></a>
+                <span><%= c.body %></span>
+                <div class="muted small"><%= c.created_at %></div>
+              </div>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+
+      <% if (currentUser) { %>
+        <form method="POST" action="/posts/<%= post.id %>/comments" class="comment-form">
+          <input type="hidden" name="_csrf" value="<%= csrf %>" />
+          <span class="avatar avatar-xs"><%= currentUser.username.charAt(0).toUpperCase() %></span>
+          <input type="text" name="body" maxlength="1000" required placeholder="Add a comment…" />
+          <button type="submit" class="btn btn-primary btn-sm">Post</button>
+        </form>
+      <% } else { %>
+        <p class="muted small"><a href="/login">Log in</a> to comment.</p>
+      <% } %>
+    </div>
+  </article>
+</div>
+
+<%- include('partials/footer') %>

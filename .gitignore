@@ -1,0 +1,9 @@
+node_modules/
+snapzy.db
+snapzy.db-shm
+snapzy.db-wal
+uploads/*
+!uploads/.gitkeep
+.env
+runs/
+*.log

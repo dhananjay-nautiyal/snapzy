@@ -1,0 +1,27 @@
+{
+  "name": "snapzy",
+  "version": "1.0.0",
+  "description": "Snapzy — a photo-sharing social app",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node seed.js"
+  },
+  "keywords": [
+    "social",
+    "photo",
+    "feed"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "multer": "^2.4.0"
+  }
+}

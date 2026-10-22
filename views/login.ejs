@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <span class="logo-mark big">◉</span>
+      <h1>Welcome back</h1>
+      <p class="muted">Log in to Snapzy</p>
+    </div>
+
+    <form method="POST" action="/login" class="form">
+      <input type="hidden" name="_csrf" value="<%= csrf %>" />
+
+      <label class="field">
+        <span>Email</span>
+        <input type="email" name="email" required autofocus autocomplete="email" placeholder="you@example.com" />
+      </label>
+
+      <label class="field">
+        <span>Password</span>
+        <input type="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-block">Log in</button>
+    </form>
+
+    <p class="auth-alt muted">
+      New here? <a href="/signup">Create an account</a>
+    </p>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

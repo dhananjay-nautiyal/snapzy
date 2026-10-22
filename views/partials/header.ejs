@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · Snapzy</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="/" class="logo">
+        <span class="logo-mark">◉</span>
+        <span class="logo-text">Snapzy</span>
+      </a>
+
+      <nav class="nav">
+        <% if (currentUser) { %>
+          <a href="/" class="nav-link">Feed</a>
+          <a href="/posts/new" class="btn btn-primary btn-sm">＋ Share</a>
+          <a href="/u/<%= currentUser.username %>" class="nav-link nav-user">
+            <span class="avatar avatar-sm"><%= currentUser.username.charAt(0).toUpperCase() %></span>
+            <%= currentUser.username %>
+          </a>
+          <form method="POST" action="/logout" class="inline-form">
+            <input type="hidden" name="_csrf" value="<%= csrf %>" />
+            <button type="submit" class="nav-link nav-btn">Log out</button>
+          </form>
+        <% } else { %>
+          <a href="/login" class="nav-link">Log in</a>
+          <a href="/signup" class="btn btn-primary btn-sm">Sign up</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+
+  <% if (flash) { %>
+    <div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+  <% } %>
+
+  <main class="container">
