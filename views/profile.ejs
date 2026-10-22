@@ -1,8 +1,8 @@
 <%- include('partials/header') %>
 
 <div class="profile">
-  <div class="profile-head card">
-    <span class="avatar avatar-lg"><%= user.username.charAt(0).toUpperCase() %></span>
+  <div class="glass profile-head" style="--i: 0">
+    <span class="avatar avatar-lg" aria-hidden="true"><%= user.username.charAt(0).toUpperCase() %></span>
     <div class="profile-info">
       <div class="profile-name-row">
         <h1 class="profile-username"><%= user.username %></h1>
@@ -22,7 +22,7 @@
 
   <% if (posts.length === 0) { %>
     <div class="empty-state">
-      <div class="empty-icon">🖼️</div>
+      <div class="empty-icon" aria-hidden="true">🖼️</div>
       <h2>No posts yet</h2>
       <p class="muted">
         <% if (isOwn) { %>Share your first photo!<% } else { %>This user hasn't posted anything yet.<% } %>
@@ -33,8 +33,8 @@
     </div>
   <% } else { %>
     <div class="grid">
-      <% posts.forEach(function(post) { %>
-        <a href="/posts/<%= post.id %>" class="grid-item">
+      <% posts.forEach(function(post, i) { %>
+        <a href="/posts/<%= post.id %>" class="grid-item" style="--i: <%= Math.min(i, 8) %>">
           <img src="<%= post.image_url %>" alt="<%= post.caption || 'Photo' %>" loading="lazy" />
           <span class="grid-overlay">
             <span>♥ <%= post.like_count %></span>

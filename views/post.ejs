@@ -1,16 +1,18 @@
 <%- include('partials/header') %>
 
 <div class="post-detail">
-  <article class="card post-card detail">
+  <article class="glass post-card detail" style="--i: 0">
     <div class="post-head">
       <a href="/u/<%= post.username %>" class="post-author">
-        <span class="avatar avatar-sm"><%= post.username.charAt(0).toUpperCase() %></span>
+        <span class="avatar avatar-sm" aria-hidden="true"><%= post.username.charAt(0).toUpperCase() %></span>
         <span class="username"><%= post.username %></span>
       </a>
-      <span class="muted time"><%= post.created_at %></span>
+      <time class="time" datetime="<%= post.created_at.replace(' ', 'T') %>Z"><%= post.created_at %></time>
     </div>
 
-    <img src="<%= post.image_url %>" alt="<%= post.caption || 'Photo' %>" class="post-image" />
+    <div class="post-media">
+      <img src="<%= post.image_url %>" alt="<%= post.caption || 'Photo' %>" />
+    </div>
 
     <div class="post-actions">
       <button
@@ -19,10 +21,11 @@
         aria-pressed="<%= post.liked_by_me ? 'true' : 'false' %>"
         <%= currentUser ? '' : 'disabled' %>
       >
-        <span class="heart"><%= post.liked_by_me ? '♥' : '♡' %></span>
+        <span class="heart" aria-hidden="true"><%= post.liked_by_me ? '♥' : '♡' %></span>
         <span class="like-count"><%= post.like_count %></span>
+        <span class="sr-only">likes</span>
       </button>
-      <span class="action-btn">💬 <span><%= post.comment_count %></span></span>
+      <span class="action-btn">💬 <span><%= post.comment_count %></span><span class="sr-only">comments</span></span>
 
       <% if (currentUser && currentUser.id === post.user_id) { %>
         <form method="POST" action="/posts/<%= post.id %>/delete" class="inline-form danger-form"
@@ -49,11 +52,11 @@
         <ul class="comment-list">
           <% comments.forEach(function(c) { %>
             <li class="comment">
-              <a href="/u/<%= c.username %>" class="avatar avatar-xs"><%= c.username.charAt(0).toUpperCase() %></a>
+              <a href="/u/<%= c.username %>" class="avatar avatar-xs" aria-hidden="true"><%= c.username.charAt(0).toUpperCase() %></a>
               <div class="comment-body">
                 <a href="/u/<%= c.username %>" class="username"><%= c.username %></a>
                 <span><%= c.body %></span>
-                <div class="muted small"><%= c.created_at %></div>
+                <div class="comment-meta"><time datetime="<%= c.created_at.replace(' ', 'T') %>Z"><%= c.created_at %></time></div>
               </div>
             </li>
           <% }) %>
@@ -63,8 +66,8 @@
       <% if (currentUser) { %>
         <form method="POST" action="/posts/<%= post.id %>/comments" class="comment-form">
           <input type="hidden" name="_csrf" value="<%= csrf %>" />
-          <span class="avatar avatar-xs"><%= currentUser.username.charAt(0).toUpperCase() %></span>
-          <input type="text" name="body" maxlength="1000" required placeholder="Add a comment…" />
+          <span class="avatar avatar-xs" aria-hidden="true"><%= currentUser.username.charAt(0).toUpperCase() %></span>
+          <input type="text" name="body" maxlength="1000" required placeholder="Add a comment…" aria-label="Add a comment" />
           <button type="submit" class="btn btn-primary btn-sm">Post</button>
         </form>
       <% } else { %>

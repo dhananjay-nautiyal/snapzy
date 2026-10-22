@@ -3,41 +3,68 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark light" />
   <title><%= title %> · Snapzy</title>
   <link rel="stylesheet" href="/css/style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    // Progressive-enhancement flags (set before first paint, fail silently):
+    //  .js      -> lets CSS gate backdrop-filter to cards actually in view
+    //  .refract -> enables the Chromium-only SVG edge refraction on the navbar
+    document.documentElement.classList.add('js');
+    try {
+      if (window.chrome && CSS.supports('backdrop-filter', 'blur(1px)')) {
+        document.documentElement.classList.add('refract');
+      }
+    } catch (e) { /* fall back silently */ }
+  </script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
+  <!-- Ambient background: something for the glass to refract -->
+  <div class="ambient" aria-hidden="true">
+    <span class="blob blob--violet"></span>
+    <span class="blob blob--cyan"></span>
+    <span class="blob blob--pink"></span>
+    <span class="blob blob--violet2"></span>
+  </div>
+
+  <!-- Chromium-only edge refraction (feature-detected above, no-op elsewhere) -->
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <filter id="nav-refract" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="7" result="noise" />
+      <feGaussianBlur in="noise" stdDeviation="2" result="softNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="softNoise" scale="6" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+
+  <div class="nav-wrap">
+    <header class="navbar glass">
       <a href="/" class="logo">
-        <span class="logo-mark">◉</span>
+        <span class="logo-mark" aria-hidden="true">◉</span>
         <span class="logo-text">Snapzy</span>
       </a>
 
-      <nav class="nav">
+      <nav class="nav" aria-label="Main">
         <% if (currentUser) { %>
-          <a href="/" class="nav-link">Feed</a>
+          <a href="/" class="nav-link nav-feed">Feed</a>
           <a href="/posts/new" class="btn btn-primary btn-sm">＋ Share</a>
           <a href="/u/<%= currentUser.username %>" class="nav-link nav-user">
-            <span class="avatar avatar-sm"><%= currentUser.username.charAt(0).toUpperCase() %></span>
-            <%= currentUser.username %>
+            <span class="avatar avatar-sm" aria-hidden="true"><%= currentUser.username.charAt(0).toUpperCase() %></span>
+            <span class="name"><%= currentUser.username %></span>
           </a>
           <form method="POST" action="/logout" class="inline-form">
             <input type="hidden" name="_csrf" value="<%= csrf %>" />
             <button type="submit" class="nav-link nav-btn">Log out</button>
           </form>
         <% } else { %>
-          <a href="/login" class="nav-link">Log in</a>
+          <a href="/login" class="btn btn-ghost btn-sm">Log in</a>
           <a href="/signup" class="btn btn-primary btn-sm">Sign up</a>
         <% } %>
       </nav>
-    </div>
-  </header>
+    </header>
+  </div>
 
   <% if (flash) { %>
-    <div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+    <div class="flash flash-<%= flash.type %>" role="status"><%= flash.message %></div>
   <% } %>
 
   <main class="container">
