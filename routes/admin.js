@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const express = require('express');
 const multer = require('multer');
 const db = require('../db');
+const { fileFilter, verifyImageFile } = require('../upload-guard');
 
 const router = express.Router();
 
@@ -41,15 +42,10 @@ const storage = multer.diskStorage({
     cb(null, 'ad-' + crypto.randomBytes(12).toString('hex') + ext);
   },
 });
-const ALLOWED = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (ALLOWED.includes(ext) && file.mimetype.startsWith('image/')) return cb(null, true);
-    cb(new Error('Only JPG, PNG, GIF or WEBP images up to 5MB are allowed.'));
-  },
+  fileFilter, // shared: extension allowlist + declared MIME
 });
 
 // Only allow http(s) targets — blocks javascript: and data: URIs.
@@ -64,7 +60,7 @@ router.get('/admin', requireAdmin, (req, res) => {
 });
 
 // --- Create an ad ---
-router.post('/admin/ads', requireAdmin, upload.single('image'), (req, res) => {
+router.post('/admin/ads', requireAdmin, upload.single('image'), verifyImageFile, (req, res) => {
   const headline = (req.body.headline || '').trim().slice(0, 140);
   const sponsor = (req.body.sponsor || '').trim().slice(0, 80);
   const link = (req.body.link_url || '').trim().slice(0, 500);
@@ -129,7 +125,7 @@ router.get('/ad/:id/click', (req, res) => {
 
 // --- Friendly handling for upload errors (wrong type / too large) ---
 router.use((err, req, res, next) => {
-  if (err && (err.name === 'MulterError' || /^Only JPG/.test(err.message || ''))) {
+  if (err && (err.name === 'MulterError' || err.code === 'UPLOAD_REJECTED')) {
     const msg =
       err.name === 'MulterError' && err.code === 'LIMIT_FILE_SIZE'
         ? 'That image is too large — max 5MB.'

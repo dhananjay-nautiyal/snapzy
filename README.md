@@ -73,7 +73,10 @@ snapzy/
 - **Session cookies** are `httpOnly` + `sameSite=lax` + `secure` in production
 - **Sessions stored in SQLite** (`session-store.js`) — survive restarts, no
   in-memory store
-- Uploads restricted by **type and size**, filenames randomized
+- Uploads restricted by **type and size**: extension allowlist + declared MIME,
+  then a **magic-byte content check** (`upload-guard.js`) so the real bytes must
+  be a genuine JPG/PNG/GIF/WEBP matching the extension — **SVG is never
+  uploadable**; 5MB cap; filenames randomized; `nosniff` on `/uploads`
 
 > **Production checklist:** set a strong `SESSION_SECRET`, serve over HTTPS,
 > and put uploads on object storage (S3/GCS) with a CDN. Sessions already use
