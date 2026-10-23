@@ -15,6 +15,12 @@ services:
       # Render generates a random secret and keeps it stable across redeploys.
       - key: SESSION_SECRET
         generateValue: true
+      # Password for the seeded demo accounts (ava/ben/cara). Generated once
+      # and stable across redeploys — read it in the Render dashboard to log
+      # in as ava for /admin. seed.js never falls back to a published default
+      # in production; without this var it uses a random password instead.
+      - key: SEED_PASSWORD
+        generateValue: true
       # Comma-separated usernames allowed into /admin (the ad manager).
       # Remove or blank this to disable the admin UI entirely.
       - key: ADMIN_USERS

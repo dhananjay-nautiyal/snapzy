@@ -1,7 +1,12 @@
 /* Seed Snapzy with demo users + posts so the feed isn't empty.
-   Run: npm run seed  */
+   Run: npm run seed
+
+   Demo password: SEED_PASSWORD env var if set; 'password123' in local dev;
+   a random one per run in production. A published default is never used in
+   production (see README "Security notes"). */
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const db = require('./db');
 
@@ -28,7 +33,14 @@ function makePhoto(name, c1, c2, label) {
 console.log('Seeding Snapzy…');
 
 // --- Demo users ---
-const hash = bcrypt.hashSync('password123', 10);
+// Password precedence: SEED_PASSWORD (set in render.yaml) > random per run
+// when in production (fail closed: nobody can log in as demo users) >
+// local dev default. A published default is never used in production.
+const IS_PROD = process.env.NODE_ENV === 'production';
+const DEMO_PASSWORD =
+  process.env.SEED_PASSWORD ||
+  (IS_PROD ? crypto.randomBytes(16).toString('base64url') : 'password123');
+const hash = bcrypt.hashSync(DEMO_PASSWORD, 10);
 const users = [
   { username: 'ava', email: 'ava@snapzy.app', bio: 'Chasing light & colour 🌄' },
   { username: 'ben', email: 'ben@snapzy.app', bio: 'Coffee, code, cameras ☕️' },
@@ -44,6 +56,12 @@ for (const u of users) {
   const row = db.prepare('SELECT id FROM users WHERE username = ?').get(u.username);
   userIds[u.username] = row.id;
 }
+
+// Keep the demo password authoritative even when the users already exist —
+// e.g. an old DB still carrying a previously published password.
+db.prepare(
+  'UPDATE users SET password_hash = ? WHERE username IN (?, ?, ?)'
+).run(hash, 'ava', 'ben', 'cara');
 
 // --- Posts (skip if already seeded) ---
 const postCount = db.prepare('SELECT COUNT(*) AS c FROM posts').get().c;
@@ -108,5 +126,9 @@ if (adCount === 0) {
 }
 
 console.log('Done.');
-console.log('\nDemo login → email: ava@snapzy.app  |  password: password123');
+if (IS_PROD) {
+  console.log('Demo login → ava@snapzy.app, password = SEED_PASSWORD (see host env)');
+} else {
+  console.log(`\nDemo login → email: ava@snapzy.app  |  password: ${DEMO_PASSWORD}`);
+}
 console.log('Admin UI   → /admin (set ADMIN_USERS=ava to enable)\n');
