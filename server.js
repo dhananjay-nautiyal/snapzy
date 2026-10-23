@@ -51,6 +51,10 @@ app.use(
     cookie: {
       httpOnly: true,
       sameSite: 'lax',
+      // HTTPS-only in production (trust proxy above makes Express honour
+      // X-Forwarded-Proto behind Render). Off in local dev so plain-HTTP
+      // http://localhost sessions keep working.
+      secure: IS_PROD,
       maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
     },
   })

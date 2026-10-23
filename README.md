@@ -70,7 +70,7 @@ snapzy/
 - Passwords hashed with **bcryptjs**
 - **Parameterized SQL** everywhere (no injection)
 - **CSRF tokens** on all state-changing forms
-- **Session cookies** are `httpOnly` + `sameSite=lax`
+- **Session cookies** are `httpOnly` + `sameSite=lax` + `secure` in production
 - Uploads restricted by **type and size**, filenames randomized
 
 > **Production checklist:** set a strong `SESSION_SECRET`, use a real session
