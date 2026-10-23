@@ -37,9 +37,9 @@ npm run dev      # or: npm start
 
 Open **http://localhost:3000**
 
-Demo login after seeding:
-- **Email:** `ava@snapzy.app`
-- **Password:** `password123`
+The seed script prints the local demo login to your terminal. No credentials
+are published in this repo — production demo accounts take their password
+from the `SEED_PASSWORD` env var (see `render.yaml`).
 
 ## Scripts
 
