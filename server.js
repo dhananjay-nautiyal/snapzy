@@ -41,7 +41,12 @@ app.use(express.json());
 
 // --- Static files ---
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// nosniff on uploads: browsers must render served files as their served
+// type — never sniff a served .jpg into an HTML/SVG document and run scripts.
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next();
+}, express.static(path.join(__dirname, 'uploads')));
 
 // --- Sessions ---
 app.use(

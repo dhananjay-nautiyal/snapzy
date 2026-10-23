@@ -4,6 +4,7 @@ const express = require('express');
 const multer = require('multer');
 const db = require('../db');
 const { getSponsoredAd } = require('../ads');
+const { fileFilter, verifyImageFile } = require('../upload-guard');
 
 const router = express.Router();
 
@@ -25,15 +26,10 @@ const storage = multer.diskStorage({
     cb(null, crypto.randomBytes(16).toString('hex') + ext);
   },
 });
-const ALLOWED = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (ALLOWED.includes(ext) && file.mimetype.startsWith('image/')) return cb(null, true);
-    cb(new Error('Only JPG, PNG, GIF or WEBP images up to 5MB are allowed.'));
-  },
+  fileFilter, // shared: extension allowlist + declared MIME
 });
 
 // --- Show upload page ---
@@ -42,7 +38,7 @@ router.get('/new', requireAuth, (req, res) => {
 });
 
 // --- Handle upload ---
-router.post('/new', requireAuth, upload.single('image'), (req, res) => {
+router.post('/new', requireAuth, upload.single('image'), verifyImageFile, (req, res) => {
   if (!req.file) {
     setFlash(req, 'error', 'Please choose an image to share.');
     return res.redirect('/posts/new');
@@ -163,7 +159,7 @@ router.post('/:id/delete', requireAuth, (req, res) => {
 // Catches MulterError and fileFilter rejections so users get a flash
 // message + redirect instead of a raw 500 page.
 router.use((err, req, res, next) => {
-  if (err && (err.name === 'MulterError' || /^Only JPG/.test(err.message || ''))) {
+  if (err && (err.name === 'MulterError' || err.code === 'UPLOAD_REJECTED')) {
     const msg =
       err.name === 'MulterError' && err.code === 'LIMIT_FILE_SIZE'
         ? 'That image is too large — max 5MB.'
