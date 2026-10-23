@@ -71,11 +71,13 @@ snapzy/
 - **Parameterized SQL** everywhere (no injection)
 - **CSRF tokens** on all state-changing forms
 - **Session cookies** are `httpOnly` + `sameSite=lax` + `secure` in production
+- **Sessions stored in SQLite** (`session-store.js`) — survive restarts, no
+  in-memory store
 - Uploads restricted by **type and size**, filenames randomized
 
-> **Production checklist:** set a strong `SESSION_SECRET`, use a real session
-> store (e.g. Redis) instead of the default in-memory store, serve over HTTPS,
-> and put uploads on object storage (S3/GCS) with a CDN.
+> **Production checklist:** set a strong `SESSION_SECRET`, serve over HTTPS,
+> and put uploads on object storage (S3/GCS) with a CDN. Sessions already use
+> a real store (SQLite); swap in Redis only if you ever run multiple instances.
 
 ## Roadmap (next steps)
 

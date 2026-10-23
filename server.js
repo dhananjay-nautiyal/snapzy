@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const db = require('./db');
 const { getSponsoredAd } = require('./ads');
+const SqliteSessionStore = require('./session-store');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -48,6 +49,9 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
+    // SQLite-backed store (session-store.js): sessions survive restarts,
+    // no MemoryStore production warning, no unbounded memory growth.
+    store: new SqliteSessionStore(db),
     cookie: {
       httpOnly: true,
       sameSite: 'lax',

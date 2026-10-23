@@ -68,6 +68,12 @@ db.exec(`
     created_at  TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
+  CREATE TABLE IF NOT EXISTS sessions (
+    sid     TEXT PRIMARY KEY,
+    sess    TEXT NOT NULL,
+    expires INTEGER NOT NULL
+  );
+
   CREATE TABLE IF NOT EXISTS follows (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     follower_id  INTEGER NOT NULL,
@@ -85,6 +91,7 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_ads_active    ON ads(active);
   CREATE INDEX IF NOT EXISTS idx_follows_follower  ON follows(follower_id);
   CREATE INDEX IF NOT EXISTS idx_follows_following ON follows(following_id);
+  CREATE INDEX IF NOT EXISTS idx_sessions_expires  ON sessions(expires);
 `);
 
 module.exports = db;
